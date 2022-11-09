@@ -109,7 +109,8 @@ func updateSGs() error {
 		return errors.New("not enough Security Group")
 	}
 
-	maxRulesPerSg := 30 //my SG limit is 60, so 30 as the look will create 2 rules per entry
+	//my SG limit is 60 inbound rules. Going with 30 as the loop will create 2 rules per entry. 1 for http and the other for https.
+	maxRulesPerSg := 30
 	start, end := 0, maxRulesPerSg
 
 	for _, sg := range result.SecurityGroups {
@@ -156,6 +157,8 @@ func updateSGs() error {
 			return err
 		}
 
+		fmt.Printf("Updated SG with %d rules.\n", len(in.IpPermissions))
+
 		start = end
 		end = end + maxRulesPerSg
 
@@ -167,6 +170,7 @@ func updateSGs() error {
 	return nil
 }
 
+// Remove all the inbound rules for the given security group.
 func removeRules(sg *ec2.SecurityGroup) error {
 	input := &ec2.RevokeSecurityGroupIngressInput{
 		GroupId:       sg.GroupId,
@@ -179,7 +183,7 @@ func removeRules(sg *ec2.SecurityGroup) error {
 		return err
 	}
 
-	fmt.Printf("Removed: %t\n", *out.Return)
+	fmt.Printf("Removed all inbound rules: %t\n", *out.Return)
 	return nil
 }
 
