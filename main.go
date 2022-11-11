@@ -157,7 +157,7 @@ func updateSGs() error {
 			return err
 		}
 
-		fmt.Printf("Updated SG with %d rules.\n", len(in.IpPermissions))
+		fmt.Printf("Updated SG with %d IPs (number of rules = x2).\n", len(ipranges))
 
 		start = end
 		end = end + maxRulesPerSg
